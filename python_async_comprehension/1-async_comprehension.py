@@ -1,26 +1,15 @@
 #!/usr/bin/env python3
-"""Task 1. Let's execute multiple coroutines at the same time with async"""
+"""Task 1. Async Comprehensions"""
 
 import asyncio
-from typing import Any, List
+from typing import List
 
-wait_random = __import__('0-basic_async_syntax').wait_random
+async_generator = __import__('0-async_generator').async_generator
 
 
-async def wait_n(n: int, max_delay: int) -> List[float]:
+async def async_comprehension() -> List[float]:
     """
-    Async routine that takes in 2 int arguments: n and max_delay
+    Collects 10 random numbers using an async
+    comprehensing over async_generator, then return the 10 random number
     """
-
-    result: List[float] = []
-
-    tasks: List[asyncio.Task] = []
-
-    for i in range(n):
-        task: asyncio.Task = asyncio.create_task(wait_random(max_delay))
-        tasks.append(task)
-
-    for task in asyncio.as_completed(tasks):
-        result.append(await task)
-
-    return result
+    return [number async for number in async_generator()]
