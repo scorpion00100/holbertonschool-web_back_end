@@ -10,7 +10,7 @@ from typing import List, Tuple
 PII_FIELDS: Tuple = ("name", "email", "phone", "ssn", "password")
 
 
-def filter_datum(fields: List[str], redaction: str, 
+def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """Returns the log message obfuscated"""
     for field in fields:
@@ -32,7 +32,7 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        """Filters values in incoming log records using filter-datum
+        """Filters values in incoming log records using filter_datum
         """
         m = super().format(record)
         message = filter_datum(self.fields, self.REDACTION, m, self.SEPARATOR)
@@ -69,8 +69,9 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 
 def main() -> None:
-    """Main function that obtains a databse connection using get_db,
-    retrieves all rows in the users tables and displays each row
+    """Main function that obtains a database connection using get_db,
+    retrieves all rows in the users tables and displays each row under a
+    filtered format
     """
     db = get_db()
     cursor = db.cursor()
