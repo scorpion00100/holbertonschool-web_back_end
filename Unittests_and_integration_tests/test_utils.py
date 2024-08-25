@@ -47,7 +47,7 @@ class TestGetJson(unittest.TestCase):
         mock_get = patcher.start()
 
         mock_response = Mock()
-        mock_responseon.return_value = test_payload
+        mock_response.json.return_value = test_payload
 
         mock_get.return_value = mock_response
 
