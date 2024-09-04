@@ -29,6 +29,7 @@ app.config.from_object(Config)
 def get_locale() -> str:
     """
     This function is invoked for each request
+    to select a language translation to use for that request
     """
     languages = app.config['LANGUAGES']
     locale = request.args.get("locale")

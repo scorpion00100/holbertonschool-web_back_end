@@ -3,7 +3,6 @@
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 from typing import Dict
-import pytz
 
 app = Flask(__name__)
 babel = Babel(app)
@@ -30,6 +29,7 @@ app.config.from_object(Config)
 def get_locale() -> str:
     """
     This function is invoked for each request
+    to select a language translation to use for that request
     """
     languages = app.config['LANGUAGES']
     locale = request.args.get("locale")
@@ -41,20 +41,6 @@ def get_locale() -> str:
     except Exception:
         pass
     return request.accept_languages.best_match(languages)
-
-
-@babel.timezoneselector
-def get_timezone() -> str:
-    """Returns a URL-provided or user time zone"""
-    timezone_url = request.args.get("timezone")
-    try:
-        if not timezone_url:
-            timezone = g.user["timezone"]
-        else:
-            timezone = timezone_url
-        return timezone
-    except (pytz.exceptions.UnknownTimeZoneError, Exception):
-        return app.config['BABEL_DEFAULT_TIMEZONE']
 
 
 def get_user() -> Dict:
@@ -82,7 +68,7 @@ def hello_world():
         username = g.user["name"]
     except Exception:
         username = None
-    return render_template("7-index.html", username=username)
+    return render_template("6-index.html", username=username)
 
 
 if __name__ == "__main__":
