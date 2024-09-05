@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Route module for the API"""
-from flask import Flask, render_template, request
+from flask import Flask, render_template, g, request
 from flask_babel import Babel
 
 app = Flask(__name__)
@@ -19,7 +19,7 @@ app.config.from_object(Config)
 
 
 @babel.localeselector
-def get_locale() -> str:
+def get_locale():
     """
     This function is invoked for each request
     to select a language translation to use for that request
