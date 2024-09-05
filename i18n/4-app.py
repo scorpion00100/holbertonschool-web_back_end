@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Route module for the API"""
-from flask import Flask, render_template, request
+""" Basic Flask app """
+
+from flask import Flask, render_template, request, g
 from flask_babel import Babel
 
 app = Flask(__name__)
@@ -8,10 +9,10 @@ babel = Babel(app)
 
 
 class Config:
-    """Config class"""
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
+    """ Config """
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
 app.config.from_object(Config)
@@ -19,21 +20,17 @@ app.config.from_object(Config)
 
 @babel.localeselector
 def get_locale():
-    """
-    This function is invoked for each request
-    to select a language translation to use for that request
-    """
-    languages = app.config['LANGUAGES']
-    locale = request.args.get("locale")
-    if locale and locale in languages:
-        return locale
-    return request.accept_languages.best_match(languages)
+    """ Locale selector """
+    requested_locale = request.args.get('locale')
+    if requested_locale in app.config['LANGUAGES']:
+        return requested_locale
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-@app.route("/")
-def hello_world():
-    """Route that renders a simple template"""
-    return render_template("4-index.html")
+@app.route('/')
+def root():
+    """ Basic Flask app """
+    return render_template('4-index.html')
 
 
 if __name__ == "__main__":

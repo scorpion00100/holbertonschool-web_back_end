@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Route module for the API"""
+""" Basic Flask app """
+import pytz
+from typing import Dict
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-from typing import Dict
 
 app = Flask(__name__)
 babel = Babel(app)
+
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
@@ -15,10 +17,10 @@ users = {
 
 
 class Config:
-    """Config class"""
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
+    """ Config """
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
 app.config.from_object(Config)
@@ -26,48 +28,65 @@ app.config.from_object(Config)
 
 @babel.localeselector
 def get_locale():
-    """
-    This function is invoked for each request
-    to select a language translation to use for that request
-    """
-    languages = app.config['LANGUAGES']
-    locale = request.args.get("locale")
-    if locale and locale in languages:
-        return locale
+    """ Locale selector """
+    requested_locale = request.args.get('locale')
+    if requested_locale in app.config['LANGUAGES']:
+        return requested_locale
     try:
-        if g.user["locale"] in languages:
-            return g.user["locale"]
+        if g.user['locale'] in app.config['LANGUAGES']:
+            return g.user['locale']
     except Exception:
         pass
-    return request.accept_languages.best_match(languages)
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 def get_user() -> Dict:
-    """Returns a user dictionary or None based on the ID"""
+    """ Get user """
     try:
-        user_id = int(request.args.get("login_as"))
-        if user_id in users.keys():
-            return users[user_id]
-    except Exception:
+        user_id = request.args.get('login_as')
+        if user_id is not None:
+            user_id = int(user_id)
+            return users.get(user_id)
+    except (ValueError, TypeError):
         return None
 
 
 @app.before_request
 def before_request():
-    """Finds a user if any, and set it as a global on flask.g.user"""
-    user = get_user()
-    if user:
-        g.user = user
+    """ Before request """
+    g.user = get_user()
 
 
-@app.route("/")
-def hello_world():
-    """Route that renders a simple template"""
+@babel.timezoneselector
+def get_timezone():
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user.timezone
+
+
+@babel.timezoneselector
+def get_timezone() -> str:
+    """ time zone """
     try:
-        username = g.user["name"]
+        if request.args.get("timezone"):
+            return pytz.timezone(request.args.get("timezone"))
+        elif g.user and g.user.get("timezone"):
+            return pytz.timezone(g.user.get("timezone"))
+        else:
+            return app.config['BABEL_DEFAULT_TIMEZONE']
+    except (pytz.exceptions.UnknownTimeZoneError, Exception):
+        return app.config['BABEL_DEFAULT_TIMEZONE']
+
+
+@app.route('/')
+def root():
+    """ Basic Flask app """
+
+    try:
+        guser = g.user['name']
     except Exception:
-        username = None
-    return render_template("6-index.html", username=username)
+        guser = None
+    return render_template('5-index.html', username=guser)
 
 
 if __name__ == "__main__":
