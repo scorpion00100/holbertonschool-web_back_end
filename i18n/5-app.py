@@ -16,7 +16,6 @@ users = {
 
 class Config:
     """Config class"""
-
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
@@ -26,7 +25,7 @@ app.config.from_object(Config)
 
 
 @babel.localeselector
-def get_locale() -> str:
+def get_locale():
     """
     This function is invoked for each request
     to select a language translation to use for that request
@@ -50,7 +49,7 @@ def get_user() -> Dict:
 
 @app.before_request
 def before_request():
-    """Finds a user if any, and set it as a global on flask.g.user"""
+    """Finds a user if any, and set it as a global"""
     user = get_user()
     if user:
         g.user = user
