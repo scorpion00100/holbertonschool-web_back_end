@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Route module for the API"""
+""" Basic Flask app """
 from flask import Flask, render_template
 from flask_babel import Babel
 
@@ -8,20 +8,19 @@ babel = Babel(app)
 
 
 class Config:
-    """Config class"""
-
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
+    """ Config """
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
 app.config.from_object(Config)
 
 
-@app.route("/")
-def hello_world():
-    """Route that renders a simple template"""
-    return render_template("1-index.html")
+@app.route('/')
+def root():
+    """ basic Flask app """
+    return render_template('1-index.html')
 
 
 if __name__ == "__main__":
