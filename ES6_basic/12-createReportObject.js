@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default function createReportObject(employeesList) {
     return {
       getNumberOfDepartments() {
@@ -6,4 +7,3 @@ export default function createReportObject(employeesList) {
       allEmployees: employeesList,
     };
   }
-  

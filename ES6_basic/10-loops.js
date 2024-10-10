@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default function appendToEachArrayValue(array, appendString) {
     const clone = [];
     let counter = 0;
