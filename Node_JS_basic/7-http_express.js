@@ -1,29 +1,24 @@
 const express = require('express');
 const countStudents = require('./3-read_file_async');
-const DebugHolberton = require('./debug');
 
-const app = express();
+const DB = process.argv[2];
 const port = 1245;
-
-const d = new DebugHolberton();
-d.fetch();
+const app = express();
+module.exports = app;
 
 app.get('/', (req, res) => {
+  res.setHeader('content-type', 'text/plain');
   res.send('Hello Holberton School!');
 });
-app.get('/students', async (req, res) => {
-  try {
-    const result = await countStudents(process.argv[2]);
-    res.send(`This is the list of our students\n${result}`);
-    res.status(200);
-  } catch (err) {
-    res.send('This is the list of our students\nCannot load the database');
-    res.status(200);
-  }
+
+app.get('/students', (req, res) => {
+  res.setHeader('content-type', 'text/plain');
+  res.write('This is the list of our students\n');
+  countStudents(DB).then((result) => {
+    res.end(result.join('\n'));
+  }).catch((error) => {
+    res.end(`${error.message}`);
+  });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-module.exports = app;
+app.listen(port);
