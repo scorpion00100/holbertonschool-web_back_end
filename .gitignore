@@ -4,3 +4,5 @@ Node_JS_basic/node_modules/
 Node_JS_basic/pnpm-lock.yaml
 unittests_in_js/node_modules
 unittests_in_js/pnpm-lock.yaml
+queuing_system_in_js/node_modules
+queuing_system_in_js/pnpm-lock.yaml
